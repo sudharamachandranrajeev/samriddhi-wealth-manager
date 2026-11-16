@@ -70,13 +70,6 @@ pub enum RuleKind {
     HighInterestDebt { min_rate_percent: u8 },
     /// The overall ISA allowance for one tax year.
     IsaAllowance { tax_year: TaxYear, amount: Money },
-    /// The most a person under `under_age` may pay into cash ISAs each tax
-    /// year, from the tax year starting `from`.
-    CashIsaCap {
-        from: Date,
-        under_age: u8,
-        amount: Money,
-    },
     /// Employers may pay more into a workplace pension than the minimum.
     PensionMatch,
     /// Guidance a question or step leans on, with no numbers of its own.
@@ -130,18 +123,6 @@ impl Catalogue {
     pub fn isa_allowance(&self, year: TaxYear) -> Option<(&Rule, Money)> {
         self.rules.iter().find_map(|r| match r.kind {
             RuleKind::IsaAllowance { tax_year, amount } if tax_year == year => Some((r, amount)),
-            _ => None,
-        })
-    }
-
-    /// The cash ISA cap in force during `year`, if any.
-    pub fn cash_isa_cap(&self, year: TaxYear) -> Option<(&Rule, Money, u8)> {
-        self.rules.iter().find_map(|r| match r.kind {
-            RuleKind::CashIsaCap {
-                from,
-                under_age,
-                amount,
-            } if from <= year.first_day() => Some((r, amount, under_age)),
             _ => None,
         })
     }
@@ -204,9 +185,6 @@ mod tests {
         assert_eq!(c.isa_allowance(TaxYear(2026)).unwrap().1, twenty);
         assert_eq!(c.isa_allowance(TaxYear(2027)).unwrap().1, twenty);
         assert_eq!(c.isa_allowance(TaxYear(2028)), None, "no guessing");
-        assert_eq!(c.cash_isa_cap(TaxYear(2026)), None);
-        let (_, cap, age) = c.cash_isa_cap(TaxYear(2027)).unwrap();
-        assert_eq!((cap, age), (Money::new(1_200_000, Currency::GBP), 65));
         assert!(c.pension_match().is_some());
         assert!(c.rule("uk.savings-goals").is_some());
         assert!(c.rule("uk.risk-and-capacity").is_some());

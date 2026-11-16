@@ -280,22 +280,6 @@ fn isa_allowance(p: &Profile, today: Date, cat: &Catalogue) -> Option<Step> {
         1..=30 => why.push_str(&format!(" {days} days to go.")),
         _ => {}
     }
-    if let Some((_, cap, age)) = cat.cash_isa_cap(year) {
-        why.push_str(&format!(
-            " If you are under {age}, at most {} of it can go into cash ISAs.",
-            cap.format()
-        ));
-    } else if let Some((cap_rule, cap, age)) = cat.cash_isa_cap(TaxYear(year.0 + 1)) {
-        let from = match &cap_rule.kind {
-            crate::catalogue::RuleKind::CashIsaCap { from, .. } => *from,
-            _ => year.last_day(),
-        };
-        why.push_str(&format!(
-            " From {}, if you are under {age}, at most {} a year can go into cash ISAs.",
-            from.strftime("%-d %B %Y"),
-            cap.format()
-        ));
-    }
     Some(
         Step::new(
             format!("isa-allowance-{}", year.0),
@@ -668,12 +652,7 @@ mod tests {
         assert!(s.why.contains("2026/27"));
         assert!(s.why.contains("up to 20,000.00 GBP"));
         assert!(s.why.contains("about 12,000.00 GBP left"));
-        assert!(
-            s.why
-                .contains("From 6 April 2027, if you are under 65, at most 12,000.00 GBP"),
-            "{}",
-            s.why
-        );
+        assert!(!s.why.contains("cash ISAs"), "no cash ISA limit: {}", s.why);
         assert_eq!((s.risk, s.effort), (2, Effort::Hours));
         assert_eq!(s.source, "https://www.gov.uk/individual-savings-accounts");
         // Not a UK resident with a UK tax home: no ISA step.
@@ -699,11 +678,7 @@ mod tests {
         assert_eq!(ids(&first), ["isa-allowance-2027", "ask:isa.used"]);
         assert_eq!(first[0].title, "Use your ISA allowance before 5 April 2028");
         assert!(first[0].why.contains("2027/28"));
-        assert!(
-            first[0]
-                .why
-                .contains("under 65, at most 12,000.00 GBP of it")
-        );
+        assert!(!first[0].why.contains("cash ISAs"), "{}", first[0].why);
         assert!(first[1].title.contains("since 6 April 2027"));
         // Ten days before the end, the countdown shows.
         let near = run(&p, date(2027, 3, 26));

@@ -36,21 +36,10 @@
       "kind": "isaAllowance",
       "taxYear": 2027,
       "amount": { "minor": 2000000, "currency": "GBP" },
-      "asOf": "2026-10-30",
-      "reviewBy": "2026-12-30",
-      "source": "https://www.gov.uk/government/publications/reduction-in-the-cash-individual-savings-account-isa-limit/cash-individual-savings-account-isa-limit-reduction",
-      "note": "The overall ISA allowance stays £20,000 when the cash limit changes."
-    },
-    {
-      "id": "uk.cash-isa-cap-under-65",
-      "kind": "cashIsaCap",
-      "from": "2027-04-06",
-      "underAge": 65,
-      "amount": { "minor": 1200000, "currency": "GBP" },
-      "asOf": "2026-10-30",
-      "reviewBy": "2026-12-30",
-      "source": "https://www.gov.uk/government/publications/reduction-in-the-cash-individual-savings-account-isa-limit/cash-individual-savings-account-isa-limit-reduction",
-      "note": "From 6 April 2027, people under 65 can put at most £12,000 a year into cash ISAs; the rest of the £20,000 can go into other ISAs."
+      "asOf": "2026-11-16",
+      "reviewBy": "2027-01-15",
+      "source": "https://www.gov.uk/government/publications/tax-free-savings-newsletter-24/tax-free-savings-newsletter-24-october-2026",
+      "note": "The ISA allowance stays £20,000 in 2027/28, and all of it can still go into cash ISAs: Budget 2026 dropped the planned £12,000 cash limit."
     },
     {
       "id": "uk.pension-match",
