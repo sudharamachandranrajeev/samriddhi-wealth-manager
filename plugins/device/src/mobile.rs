@@ -94,6 +94,43 @@ impl<R: Runtime> Device<R> {
         Ok(())
     }
 
+    /// A Brahma sync secret, decrypted with its own Keystore key.
+    pub fn sync_secret(&self, name: &str) -> Result<Option<String>> {
+        crate::check_sync_name(name)?;
+        #[derive(Deserialize)]
+        struct Reply {
+            value: Option<String>,
+        }
+        let r: Reply = self
+            .0
+            .run_mobile_plugin("syncSecret", serde_json::json!({ "name": name }))
+            .map_err(|_| Error::Keyring("the saved sync key cannot be read".into()))?;
+        Ok(r.value)
+    }
+
+    /// Keep a sync secret, encrypted by a Keystore key. Errors never carry it.
+    pub fn set_sync_secret(&self, name: &str, value: &str) -> Result<()> {
+        crate::check_sync_name(name)?;
+        self.0
+            .run_mobile_plugin::<serde_json::Value>(
+                "setSyncSecret",
+                serde_json::json!({ "name": name, "value": value }),
+            )
+            .map_err(|_| Error::Keyring("the sync key could not be saved".into()))?;
+        Ok(())
+    }
+
+    pub fn clear_sync_secret(&self, name: &str) -> Result<()> {
+        crate::check_sync_name(name)?;
+        self.0
+            .run_mobile_plugin::<serde_json::Value>(
+                "clearSyncSecret",
+                serde_json::json!({ "name": name }),
+            )
+            .map_err(|_| Error::Keyring("the sync key could not be removed".into()))?;
+        Ok(())
+    }
+
     /// Blocking screenshots and screen recording (Android FLAG_SECURE) works here.
     pub fn supports_capture_block(&self) -> bool {
         true

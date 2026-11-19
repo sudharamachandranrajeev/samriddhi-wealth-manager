@@ -15,8 +15,9 @@
   import AiPanel from '../components/AiPanel.svelte'
   import HoldingsImport from '../components/HoldingsImport.svelte'
   import SecurityPanel from '../components/SecurityPanel.svelte'
+  import SyncPanel from '../components/SyncPanel.svelte'
 
-  type Section = 'look' | 'lock' | 'backups' | 'updates' | 'export' | 'holdings' | 'answers' | 'ai' | 'security' | 'safety'
+  type Section = 'look' | 'lock' | 'backups' | 'updates' | 'export' | 'holdings' | 'answers' | 'ai' | 'sync' | 'security' | 'safety'
   let { status, section: initial = 'look', onstatus }: { status: Status; section?: string; onstatus: () => Promise<void> } = $props()
 
   const SECTIONS: { value: Section; label: string }[] = [
@@ -28,6 +29,7 @@
     { value: 'holdings', label: 'Import holdings' },
     { value: 'answers', label: 'Your answers' },
     { value: 'ai', label: 'AI' },
+    { value: 'sync', label: 'Sync' },
     { value: 'security', label: 'Security' },
     { value: 'safety', label: 'Safety' },
   ]
@@ -322,6 +324,9 @@
 {:else if section === 'ai'}
   <p class="why">Optional: let an AI model put your steps into plain words. You see every word before it is sent, or leave it off.</p>
   <AiPanel />
+{:else if section === 'sync'}
+  <p class="why">Share a short wealth summary with your other Brahma apps, and see Artha's cash and spending here.</p>
+  <SyncPanel />
 {:else if section === 'security'}
   <p class="why">What keeps your data safe on this device, so you can see at a glance whether anything needs a look.</p>
   <SecurityPanel {mobile} />

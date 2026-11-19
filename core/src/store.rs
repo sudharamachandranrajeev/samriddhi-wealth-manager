@@ -467,6 +467,16 @@ fn with_copy<T>(
     f(&conn)
 }
 
+/// Open (or create) another database encrypted with the same kind of key,
+/// such as the sync store beside the main one. Checks the key opens it.
+pub fn open_encrypted(path: &Path, key: &Key) -> Result<Connection> {
+    let conn = Connection::open(path)?;
+    conn.execute_batch(&format!("PRAGMA key = \"{}\";", key_literal(key)))?;
+    readable(&conn)?;
+    conn.pragma_update(None, "journal_mode", "WAL")?;
+    Ok(conn)
+}
+
 /// SQLCipher's raw-key form: x'<64 hex digits>', used as-is with no key derivation.
 fn key_literal(key: &Key) -> String {
     let hex: String = key.iter().map(|b| format!("{b:02x}")).collect();

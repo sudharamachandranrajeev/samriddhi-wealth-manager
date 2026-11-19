@@ -535,6 +535,18 @@ export interface Commands {
   ai_preview: [Record<string, never>, AiPreview]
   /** `text` must be exactly the last preview's text. The answer is plain text to show, never markup. */
   ai_send: [{ text: string }, string]
+  sync_status: [Record<string, never>, SyncView]
+  sync_sign_in: [{ server: string; email: string; password: string }, SyncView]
+  sync_recovery: [{ recoveryKey: string }, SyncView]
+  /** A brahma:// link: pair (join; show the code), moved (follow the server), setup (names the server). */
+  sync_link: [{ link: string }, SyncLinkDone]
+  sync_join_check: [Record<string, never>, SyncView]
+  sync_cancel_join: [Record<string, never>, null]
+  /** Shares the wealth row when it changed, then fetches Artha's money row. */
+  sync_now: [Record<string, never>, SyncView]
+  sync_sign_out: [Record<string, never>, SyncView]
+  /** Artha's shared money row; read-only here. Null when none has arrived. */
+  money_snapshot: [Record<string, never>, MoneyView | null]
   security_status: [Record<string, never>, SecurityStatus]
   /** Phones only; on a computer it answers with an error. Off by default. */
   set_block_capture: [{ on: boolean }, null]
@@ -543,6 +555,37 @@ export interface Commands {
   import_pick: [Record<string, never>, ImportPreview | null]
   import_apply: [Record<string, never>, string]
   import_cancel: [Record<string, never>, null]
+}
+
+export interface SyncView {
+  signedIn: boolean
+  server: string | null
+  email: string | null
+  needsRecovery: boolean
+  joinCode: string | null
+  lastSync: string | null
+  lastError: string | null
+}
+
+export interface SyncLinkDone {
+  kind: 'pair' | 'moved' | 'setup'
+  server: string | null
+  view: SyncView
+}
+
+/** Amounts are whole minor units of `currency`. */
+export interface MoneyView {
+  currency: string
+  month: string
+  asOf: string
+  updated: string
+  ageDays: number | null
+  liquidCash: number
+  debtTotal: number
+  monthlySpend: number
+  cushionMonths: number | null
+  /** [account, last statement date] */
+  freshness: [string, string][]
 }
 
 export interface Dismissal {

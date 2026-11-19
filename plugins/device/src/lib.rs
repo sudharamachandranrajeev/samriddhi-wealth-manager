@@ -60,6 +60,18 @@ pub fn init<R: Runtime>() -> TauriPlugin<R> {
         .build()
 }
 
+/// Sync secrets are named `samriddhi.sync.<word>`; nothing else may use the slots.
+pub(crate) fn check_sync_name(name: &str) -> Result<()> {
+    let ok = name.strip_prefix("samriddhi.sync.").is_some_and(|w| {
+        !w.is_empty() && w.len() <= 32 && w.bytes().all(|b| b.is_ascii_lowercase())
+    });
+    if ok {
+        Ok(())
+    } else {
+        Err(Error::Keyring("not a sync secret".into()))
+    }
+}
+
 pub(crate) fn random_key() -> Result<[u8; 32]> {
     let mut key = [0u8; 32];
     getrandom::fill(&mut key).map_err(|e| Error::Store(e.to_string()))?;

@@ -13,6 +13,7 @@ const ACCOUNT: &str = "samriddhi";
 const KEY_FILE: &str = "db.key";
 /// The user's own AI API key: only ever in the OS keyring, never in a file.
 const AI_SERVICE: &str = "dev.brahma.samriddhi.ai";
+const SYNC_SERVICE: &str = "dev.brahma.samriddhi.sync";
 
 pub fn init<R: Runtime, C: DeserializeOwned>(
     _app: &AppHandle<R>,
@@ -142,6 +143,40 @@ impl<R: Runtime> Device<R> {
     /// Forget the AI API key.
     pub fn clear_ai_key(&self) -> Result<()> {
         match self.ai_entry()?.delete_credential() {
+            Ok(()) | Err(keyring_core::Error::NoEntry) => Ok(()),
+            Err(e) => Err(Error::Keyring(e.to_string())),
+        }
+    }
+}
+
+impl<R: Runtime> Device<R> {
+    fn sync_entry(&self, name: &str) -> Result<keyring_core::Entry> {
+        crate::check_sync_name(name)?;
+        if let Some(why) = &self.keyring {
+            return Err(Error::Keyring(why.clone()));
+        }
+        keyring_core::Entry::new(SYNC_SERVICE, name).map_err(|e| Error::Keyring(e.to_string()))
+    }
+
+    /// A Brahma sync secret (session or data key), if there is one.
+    pub fn sync_secret(&self, name: &str) -> Result<Option<String>> {
+        match self.sync_entry(name)?.get_password() {
+            Ok(k) => Ok(Some(k)),
+            Err(keyring_core::Error::NoEntry) => Ok(None),
+            Err(e) => Err(Error::Keyring(e.to_string())),
+        }
+    }
+
+    /// Keep a sync secret in the OS keyring. With no keyring it is refused:
+    /// there is no fallback file.
+    pub fn set_sync_secret(&self, name: &str, value: &str) -> Result<()> {
+        self.sync_entry(name)?
+            .set_password(value)
+            .map_err(|e| Error::Keyring(e.to_string()))
+    }
+
+    pub fn clear_sync_secret(&self, name: &str) -> Result<()> {
+        match self.sync_entry(name)?.delete_credential() {
             Ok(()) | Err(keyring_core::Error::NoEntry) => Ok(()),
             Err(e) => Err(Error::Keyring(e.to_string())),
         }
