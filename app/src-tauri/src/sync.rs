@@ -298,11 +298,12 @@ pub async fn sync_sign_in(
 ) -> CommandResult<SyncView> {
     blocking(app, move |app| {
         app.state::<App>().with(|_| Ok(()))?;
+        let store = open_sync_store(app)?;
         let mut s = sync_state(app)?;
         s.ticket = None;
         match s
             .account(app)
-            .sign_in(&server, &email, &password, &device_name())
+            .sign_in(&server, &email, &password, store.device_id())
         {
             Ok(()) => s.needs_recovery = false,
             Err(SyncError::RecoveryKeyNeeded) => s.needs_recovery = true,
@@ -317,9 +318,10 @@ pub async fn sync_sign_in(
 pub async fn sync_recovery(app: AppHandle, recovery_key: String) -> CommandResult<SyncView> {
     blocking(app, move |app| {
         app.state::<App>().with(|_| Ok(()))?;
+        let store = open_sync_store(app)?;
         let mut s = sync_state(app)?;
         s.account(app)
-            .unlock_with_recovery_key(&recovery_key, &device_name())
+            .unlock_with_recovery_key(&recovery_key, store.device_id())
             .map_err(err)?;
         s.needs_recovery = false;
         Ok(view(app, &mut s))
@@ -377,6 +379,7 @@ pub async fn sync_link(app: AppHandle, link: String) -> CommandResult<LinkDone> 
 #[tauri::command]
 pub async fn sync_join_check(app: AppHandle) -> CommandResult<SyncView> {
     blocking(app, |app| {
+        let store = open_sync_store(app)?;
         let mut s = sync_state(app)?;
         let Some(ticket) = s.ticket.take() else {
             return Ok(view(app, &mut s));
@@ -384,7 +387,7 @@ pub async fn sync_join_check(app: AppHandle) -> CommandResult<SyncView> {
         match s.account(app).join_grant(&ticket) {
             Ok(Some(grant)) => {
                 s.account(app)
-                    .join(&ticket, &grant, &device_name())
+                    .join(&ticket, &grant, store.device_id())
                     .map_err(err)?;
             }
             Ok(None) => s.ticket = Some(ticket),
