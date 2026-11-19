@@ -47,6 +47,12 @@ class AiKeyArgs {
 }
 
 @InvokeArg
+class SyncSecretArgs {
+    var name: String? = null
+    var value: String? = null
+}
+
+@InvokeArg
 class FetchArgs {
     var url: String = ""
 }
@@ -67,6 +73,8 @@ class DevicePlugin(private val activity: Activity) : Plugin(activity) {
     // the database key never share a wrapping key.
     private val dbAlias = "dev.brahma.samriddhi.db-wrap"
     private val aiAlias = "dev.brahma.samriddhi.ai-wrap"
+    private val syncAlias = "dev.brahma.samriddhi.sync-wrap"
+    private val syncName = Regex("^samriddhi\\.sync\\.[a-z]{1,32}$")
 
     private fun wrapKey(alias: String): SecretKey {
         val store = KeyStore.getInstance("AndroidKeyStore").apply { load(null) }
@@ -175,6 +183,52 @@ class DevicePlugin(private val activity: Activity) : Plugin(activity) {
     fun clearAiKey(invoke: Invoke) {
         if (prefs.edit().remove("ai-wrapped").commit()) invoke.resolve()
         else invoke.reject("could not remove the AI key")
+    }
+
+    // Brahma sync secrets (session, data key): their own Keystore key and
+    // one slot each. Errors never include the secret.
+    private fun syncSlot(invoke: Invoke): Pair<String, String?>? {
+        val args = invoke.parseArgs(SyncSecretArgs::class.java)
+        val name = args.name
+        if (name == null || !syncName.matches(name)) {
+            invoke.reject("not a sync secret")
+            return null
+        }
+        return Pair("sync:" + name, args.value)
+    }
+
+    @Command
+    fun syncSecret(invoke: Invoke) {
+        val (slot, _) = syncSlot(invoke) ?: return
+        try {
+            val result = JSObject()
+            unseal(syncAlias, slot, Charsets.UTF_8)?.let { result.put("value", it) }
+            invoke.resolve(result)
+        } catch (e: Exception) {
+            invoke.reject("the saved sync key cannot be read")
+        }
+    }
+
+    @Command
+    fun setSyncSecret(invoke: Invoke) {
+        val (slot, value) = syncSlot(invoke) ?: return
+        if (value.isNullOrEmpty() || value.length > 8192) {
+            invoke.reject("a sync key is 1 to 8192 characters")
+            return
+        }
+        try {
+            seal(syncAlias, slot, value, Charsets.UTF_8)
+            invoke.resolve()
+        } catch (e: Exception) {
+            invoke.reject("could not store the sync key")
+        }
+    }
+
+    @Command
+    fun clearSyncSecret(invoke: Invoke) {
+        val (slot, _) = syncSlot(invoke) ?: return
+        if (prefs.edit().remove(slot).commit()) invoke.resolve()
+        else invoke.reject("could not remove the sync key")
     }
 
     // FLAG_SECURE blocks screenshots, screen recording and the recents

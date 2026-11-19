@@ -1,0 +1,28 @@
+[package]
+name = "brahma-sync"
+version = "0.1.0"
+description = "A Rust client for Brahma sync: the same end-to-end encrypted protocol as brahma_core (Dart)"
+license = "MIT"
+edition = "2024"
+publish = false
+
+[dependencies]
+argon2 = "0.5"
+base64 = "0.22"
+chacha20poly1305 = "0.10"
+flate2 = "1"
+getrandom = "0.3"
+hkdf = "0.13"
+reqwest = { version = "0.13", default-features = false, features = ["blocking", "rustls-no-provider"] }
+rusqlite = "0.37"
+rustls = { version = "0.23", default-features = false, features = ["ring"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = { version = "1", features = ["preserve_order"] }
+sha2 = "0.11"
+thiserror = "2"
+url = "2"
+x25519-dalek = { version = "2", features = ["static_secrets"] }
+zeroize = "1"
+
+[dev-dependencies]
+tempfile = "3"

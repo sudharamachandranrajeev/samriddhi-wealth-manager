@@ -10,7 +10,7 @@
 
 import type {
   Account, AiSettings, AiSettingsView, BackupKind, ClassWeights, GoalInput, Holding, HoldingsImportPreview, HoldingsImportView, Backups, CountryTie, Dismissal, Goal, ImportPreview, Profile, RiskAnswer, RiskProfile, RiskQuestion,
-  RollbackPlan, SecurityStatus, Status, Step, UpdateInfo, UpdateMode, UpdateStatus,
+  MoneyView, RollbackPlan, SecurityStatus, Status, SyncView, Step, UpdateInfo, UpdateMode, UpdateStatus,
 } from './api.ts'
 import { formatMoney, monthsCovered, roughNetWorth, type Money } from './money.ts'
 import { insightsView, planView, rebalanceView, wealthView } from './mock-portfolio.ts'
@@ -87,6 +87,8 @@ interface Db {
   holdings: Holding[]
   /** A holdings file picked and waiting for Import (Settings, Import holdings). */
   pendingHoldings: boolean
+  /** Brahma sync in the preview; unset = signed out. */
+  sync?: SyncView
   nextId: number
   picked: boolean
   wrong: number
@@ -286,6 +288,10 @@ function needOpen() {
 // Arguments arrive as loose JSON, as they would over the bridge.
 type Args = Record<string, any>
 
+function syncView(): SyncView {
+  return db.sync ?? { signedIn: false, server: null, email: null, needsRecovery: false, joinCode: null, lastSync: null, lastError: null }
+}
+
 const handlers: Record<string, (a: Args) => unknown> = {
   status,
   create_store: () => {
@@ -457,6 +463,41 @@ const handlers: Record<string, (a: Args) => unknown> = {
   plan_view: () => { needOpen(); return plan() },
   rebalance_view: ({ cashFlow }) => { needOpen(); return rebalanceView(db.holdings, 'GBP', planTarget(), cashFlow ?? null) },
   insights_view: () => { needOpen(); return insightsView('GBP', planTarget()) },
+  sync_status: () => { needOpen(); return syncView() },
+  sync_sign_in: ({ server, email }) => {
+    needOpen()
+    db.sync = { ...syncView(), signedIn: true, server: String(server), email: String(email) }
+    return db.sync
+  },
+  sync_recovery: () => { needOpen(); return syncView() },
+  sync_link: ({ link }) => {
+    needOpen()
+    const l = String(link)
+    if (l.startsWith('brahma://moved')) return { kind: 'moved', server: null, view: syncView() }
+    if (l.includes('://pair')) {
+      db.sync = { ...syncView(), joinCode: '123 456' }
+      return { kind: 'pair', server: null, view: db.sync }
+    }
+    throw 'That is not a Brahma link.'
+  },
+  sync_join_check: () => {
+    needOpen()
+    db.sync = { ...syncView(), joinCode: null, signedIn: true, server: 'https://sync.example.org', email: 'me@example.com' }
+    return db.sync
+  },
+  sync_cancel_join: () => { db.sync = { ...syncView(), joinCode: null }; return null },
+  sync_now: () => {
+    needOpen()
+    if (!syncView().signedIn) throw 'Not signed in'
+    db.sync = { ...syncView(), lastSync: new Date().toISOString(), lastError: null }
+    return db.sync
+  },
+  sync_sign_out: () => { db.sync = undefined; return syncView() },
+  money_snapshot: (): MoneyView | null => {
+    needOpen()
+    if (!syncView().signedIn) return null
+    return { currency: 'GBP', month: '2026-10', asOf: '2026-10-31', updated: '2026-11-16T09:00:00Z', ageDays: 3, liquidCash: 700_000, debtTotal: 50_000, monthlySpend: 200_000, cushionMonths: 3.5, freshness: [['Current account', '2026-10-31'], ['Credit card', '2026-10-28']] }
+  },
   ai_settings_get: (): AiSettingsView => {
     needOpen()
     const settings = (db.settings['ai.settings'] as AiSettings | undefined) ?? AI_OFF

@@ -1,0 +1,130 @@
+{
+  "email": "Vector.Person@Example.com",
+  "pw": "correct horse battery staple",
+  "login": "8019334679c7d4192286da34fefd9374ea380d69be694e8dc7d74ba460d4f1af",
+  "kek": "d0373bcf441eb5d2e724439a02a19cff10f328fb710a20f804c2122ec165e0c9",
+  "recoveryText": "0123-4567-89AB-CDEF-GHJK-MNPQ-RSTV-WXYZ-0123-4567-89AB-CDEF-GHJK",
+  "recoveryKek": "8cff08b5f4e964e2264a9be1af667ed5172b67ab439a2045604184bf5dad0ef8",
+  "dek": "00070e151c232a31383f464d545b626970777e858c939aa1a8afb6bdc4cbd2d9",
+  "owner": "u0000000000vector",
+  "device": "d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1",
+  "seq": 7,
+  "aad": "artha/v1|u0000000000vector|d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1|7",
+  "rows": [
+    {
+      "t": "bridge_money_snapshot",
+      "r": {
+        "id": "artha.money",
+        "hlc": "001763290000000-000002-d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1",
+        "deleted": 0,
+        "source": "artha",
+        "snapshot": "{\"v\":1,\"currency\":\"GBP\"}",
+        "updated": "2026-11-16T09:00:00.000Z"
+      }
+    },
+    {
+      "t": "entries",
+      "r": {
+        "id": "e1",
+        "hlc": "001763290000001-000000-d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1",
+        "deleted": 1,
+        "memo": "Café £3.20 ✓"
+      },
+      "p": [
+        {
+          "id": "p1",
+          "entry_id": "e1",
+          "position": 0,
+          "amount": -320
+        }
+      ]
+    }
+  ],
+  "hlc": [
+    [
+      "tick",
+      "",
+      1000,
+      "000000000001000-000000-abc"
+    ],
+    [
+      "tick",
+      "",
+      1000,
+      "000000000001000-000001-abc"
+    ],
+    [
+      "tick",
+      "",
+      999,
+      "000000000001000-000002-abc"
+    ],
+    [
+      "receive",
+      "000000000005000-000003-zzz",
+      1001,
+      ""
+    ],
+    [
+      "tick",
+      "",
+      1002,
+      "000000000005000-000005-abc"
+    ],
+    [
+      "receive",
+      "000000000005000-000009-zzz",
+      1003,
+      ""
+    ],
+    [
+      "receive",
+      "garbage",
+      1003,
+      ""
+    ],
+    [
+      "tick",
+      "",
+      6000,
+      "000000000006000-000000-abc"
+    ],
+    [
+      "receive",
+      "000000000006000-000000-zzz",
+      6000,
+      ""
+    ],
+    [
+      "tick",
+      "",
+      5999,
+      "000000000006000-000002-abc"
+    ]
+  ],
+  "pairing": {
+    "link": "samriddhi://pair?s=http%3A%2F%2F127.0.0.1%3A8787&p=abcdefghij12345&k=__79_Pv6-fj39vX08_Lx8O_u7ezr6uno5-bl5OPi4eA",
+    "id": "abcdefghij12345",
+    "linkBytes": "fffefdfcfbfaf9f8f7f6f5f4f3f2f1f0efeeedecebeae9e8e7e6e5e4e3e2e1e0",
+    "requesterSeed": "011e3b587592afcce90623405d7a97b4d1ee0b2845627f9cb9d6f3102d4a6784",
+    "requesterPub": "9efe3175f570cef66028adc8ab6e7bcc5f217238a09dcb2179cc0c22bab66d2d",
+    "code": "760 173",
+    "recipientSeed": "05121f2c394653606d7a8794a1aebbc8d5e2effc091623303d4a5764717e8b98",
+    "recipientPub": "c25e8b84378b21071d603dfce3f947b162b6e715240344db0a18d99259a6de23",
+    "grant": {
+      "email": "vector.person@example.com",
+      "userId": "u0000000000vector",
+      "login": "8019334679c7d4192286da34fefd9374ea380d69be694e8dc7d74ba460d4f1af",
+      "dek": "00070e151c232a31383f464d545b626970777e858c939aa1a8afb6bdc4cbd2d9"
+    }
+  },
+  "moved": {
+    "link": "brahma://moved?s=https%3A%2F%2Fsync.example.com",
+    "server": "https://sync.example.com"
+  },
+  "wrappedPw": "pbkcADX92GWwRFzjCz9zMuKz4k2c5H2ko0Wo4ynW/Ai37EtxQk088vofr5JwuZ2mlG9PXFHHqydZcYSZGiDbXKXAJGyMAR9S",
+  "wrappedRecovery": "e86tOj3icOhC6ZLbMIVtkw9TMowZpkrrtKkp/gFlT9e1QMx5JCNhDPYVb8Ob5hodP523+YKkI0HD0JX19i0MyNYEFBJQiper",
+  "payload": "DqHJ9DURaEa6xjjOffK8N1aR6QSQvRn1HIg34yvysbIS0sXWCwIgGToutXxOw/bfP6NKWdeMoNw9uCb036zf+N/eQy14kwoGhPihaL4uTewYgjleh9JnUy+ORDyTA8o8TIsWP+GbZ1KcT5gtSlDzlqR+goDjOQoZASNukiukXHpBez/r7zOF41oiWukg/UZJMaOcZLi3n6qlIDzZAWRn3spIXk5Ftcd7DwYnYQ6iswdj2fHHv0g4jO2l5zaELSBVNqo+Q5BNgl2BC2BHx7wqz2Hsj1aqB1QEnCU8J04c6rHTVrss8LvhIjljohKtNuAukriklsQ9bybAcTdw2MJt2U233V57AGqC71iGRaqnOjXMCPWSb246MguGMbYVJ5kYaOS462LMYELpG5Be50+kJHibIvWn2w==",
+  "pairRequest": "BBql5Bi8QA+uUfifEg3BnOm9/sAwsvHxDhYb3yUgYoyYTaTjI1XfdJoPihpZZC563D5eaeFM/hWlgDmXzM3FZ3uMdk8vC2PdiTkT1XwNRY8YwxTGwWB6DlW0AVOhkdisvGejUsRQNZkk4d3k/URYQ6rdouZmNF7x6kR2JSaBsabHdhHTqkbZxF4=",
+  "pairGrant": "{\"key\":\"3XA3muvNUhsjtmaRDmCFh8R1IWyM6lMV0VdnWybjxBs=\",\"box\":\"WOsSjfQwZj3cZFsNDtuA4mP4sA8/5iIW7PiSAOw0fJwvIhwuTC8nxMgrqXqGhCzUkkeloE/oEniNuRkI+i2iEGuUQj9+2hGItQgx+z1K8FMfaqmSg1TVbTIIWrn4hRGh4vfXWRmeyTUsQ1vyS8OHibwPGHyv0cS/xX40wvIP14sd067PzcoxakCH1R/42P3qjIalSc+jeuNQnHFBLY3r0dpHXLiS2ahy5yBR+mCq9LU3xdpHVVF45plrmltx3zbgdq2ovzgWdABL6OlnBkU2RaQ21NIV6dXEdtN87gZcPxLK9W5yWlKBCTj1Dw==\"}"
+}

@@ -11,6 +11,7 @@ mod insights;
 mod lockout;
 mod security;
 mod sentinel;
+mod sync;
 mod update;
 mod wealth;
 
@@ -513,6 +514,7 @@ pub fn run() {
                 use std::os::unix::fs::PermissionsExt;
                 let _ = std::fs::set_permissions(d, std::fs::Permissions::from_mode(0o700));
             }
+            app.manage(sync::Sync::default());
             app.manage(App {
                 inner: Mutex::new(Inner::default()),
                 dir,
@@ -527,6 +529,15 @@ pub fn run() {
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
+            sync::sync_status,
+            sync::sync_sign_in,
+            sync::sync_recovery,
+            sync::sync_link,
+            sync::sync_join_check,
+            sync::sync_cancel_join,
+            sync::sync_now,
+            sync::sync_sign_out,
+            sync::money_snapshot,
             status,
             create_store,
             recovery_key,

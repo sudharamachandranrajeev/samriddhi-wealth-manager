@@ -16,7 +16,8 @@ tauri-build = { version = "2.7.4", features = [] }
 [dependencies]
 # For AI narration, on every platform. Both are already here through the
 # updater on desktop, with these same features.
-reqwest = { version = "0.13", default-features = false, features = ["rustls-no-provider"] }
+reqwest = { version = "0.13", default-features = false, features = ["rustls-no-provider", "blocking"] }
+brahma-sync = { version = "0.1.0", path = "../../brahma-sync" }
 rustls = { version = "0.23", default-features = false, features = ["ring"] }
 samriddhi-core = { version = "0.2.0", path = "../../core" }
 tauri-plugin-samriddhi-device = { version = "0.2.0", path = "../../plugins/device" }

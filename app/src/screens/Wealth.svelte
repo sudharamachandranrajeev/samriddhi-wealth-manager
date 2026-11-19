@@ -4,7 +4,7 @@
   // named, but not counted until exchange rates arrive. Every figure has a "?".
   import { Button, Card, Explain, Pill, Stat } from '@samriddhi/ui'
   import Plus from '@lucide/svelte/icons/plus'
-  import { call, type AccountView, type Holding, type WealthView, type Wrapper } from '../lib/api.ts'
+  import { call, type AccountView, type Holding, type MoneyView, type WealthView, type Wrapper } from '../lib/api.ts'
   import { HINTS } from '../lib/hints.ts'
   import { formatMoney } from '../lib/money.ts'
   import { CLASSES, classLabel, pct, WRAPPERS, wrapperLabel } from '../lib/portfolio.ts'
@@ -14,6 +14,8 @@
   import MixBar from '../components/MixBar.svelte'
 
   let view = $state<WealthView | null>(null)
+  /** Artha's money summary through Brahma sync, when one has arrived. */
+  let money = $state<MoneyView | null>(null)
   /** What is open for editing: 'new-account', 'account:<id>', 'add:<accountId>' or 'holding:<id>'. */
   let editing = $state<string | null>(null)
   let confirming = $state<string | null>(null)
@@ -29,6 +31,19 @@
     }
   }
   load()
+
+  async function loadMoney() {
+    try {
+      const sync = await call('sync_status')
+      if (sync.signedIn) await call('sync_now').catch(() => null)
+      money = await call('money_snapshot')
+    } catch {
+      money = null
+    }
+  }
+  loadMoney()
+
+  const cash = (minor: number) => (money ? formatMoney({ minor, currency: money.currency }) : '')
 
   function open(key: string, a?: AccountView) {
     editing = key
@@ -106,6 +121,24 @@
       {/if}
     {/if}
   </Card>
+
+  {#if money}
+    <Card title="Cash and spending, from Artha" explain="Artha's summary of your bank accounts, shared through Brahma sync. Samriddhi only reads it. The cushion is your cash divided by a month's spending.">
+      <p class="muted small" class:warn={(money.ageDays ?? 99) > 35}>
+        Figures to {money.asOf || money.month}; Artha updated them {money.ageDays === null ? 'at an unknown time' : money.ageDays === 0 ? 'today' : `${money.ageDays} day${money.ageDays === 1 ? '' : 's'} ago`}.
+        {#if (money.ageDays ?? 99) > 35}They may be out of date: import recent statements in Artha.{/if}
+      </p>
+      <div class="stats">
+        <Stat label="Cash you can reach" value={cash(money.liquidCash)} explain="Current and savings balances in Artha." />
+        <Stat label="Debts" value={cash(money.debtTotal)} explain="What Artha shows you owe on cards and loans." />
+        <Stat label="Spending a month" value={cash(money.monthlySpend)} note={money.month} explain="Artha's spending for its latest full month." />
+        <Stat label="Cushion" value={money.cushionMonths === null ? '—' : `${money.cushionMonths} months`} explain="How many months of spending your cash would cover." />
+      </div>
+      {#if money.freshness.length}
+        <p class="muted small">Last statements: {money.freshness.map(([a, d]) => `${a} ${d || 'never'}`).join(' · ')}</p>
+      {/if}
+    </Card>
+  {/if}
 
   <Card title="Accounts" explain="An account is where holdings sit: an ISA, a pension, a taxable account or a cash account. The kind matters for tax, and for where rebalancing costs least.">
     <div class="stack">

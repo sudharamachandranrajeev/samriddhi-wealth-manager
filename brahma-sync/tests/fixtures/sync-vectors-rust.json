@@ -1,0 +1,126 @@
+{
+  "email": "Vector.Person@Example.com",
+  "pw": "correct horse battery staple",
+  "login": "8019334679c7d4192286da34fefd9374ea380d69be694e8dc7d74ba460d4f1af",
+  "kek": "d0373bcf441eb5d2e724439a02a19cff10f328fb710a20f804c2122ec165e0c9",
+  "recoveryText": "7KQ2-M9XD-0000-1111-2222-3333-4444-5555-6666-7777-8888-9999-AAAA",
+  "recoveryKek": "29c08a189e4957022558aad1abc6aa8c23f93fbb0e681c944256808e7545c863",
+  "dek": "030e19242f3a45505b66717c87929da8b3bec9d4dfeaf5000b16212c37424d58",
+  "owner": "u00000000000rust",
+  "device": "f00df00df00df00df00df00df00df00d",
+  "aad": "artha/v1|u00000000000rust|f00df00df00df00df00df00df00df00d|3",
+  "rows": [
+    {
+      "t": "bridge_wealth_snapshot",
+      "r": {
+        "id": "samriddhi.wealth",
+        "hlc": "001763290000000-000000-f00df00df00df00df00df00df00df00d",
+        "deleted": 0,
+        "source": "samriddhi",
+        "snapshot": "{\"v\":1,\"currency\":\"GBP\"}",
+        "updated": "2026-11-16T10:00:00Z"
+      }
+    },
+    {
+      "t": "entries",
+      "r": {
+        "id": "e2",
+        "hlc": "001763290000001-000000-f00df00df00df00df00df00df00df00d",
+        "deleted": 0,
+        "memo": "Chai ₹40 ✓"
+      },
+      "p": [
+        {
+          "id": "p2",
+          "entry_id": "e2",
+          "position": 0,
+          "amount": 4000
+        }
+      ]
+    }
+  ],
+  "hlc": [
+    [
+      "tick",
+      "",
+      1000,
+      "000000000001000-000000-abc"
+    ],
+    [
+      "tick",
+      "",
+      1000,
+      "000000000001000-000001-abc"
+    ],
+    [
+      "tick",
+      "",
+      999,
+      "000000000001000-000002-abc"
+    ],
+    [
+      "receive",
+      "000000000005000-000003-zzz",
+      1001,
+      ""
+    ],
+    [
+      "tick",
+      "",
+      1002,
+      "000000000005000-000005-abc"
+    ],
+    [
+      "receive",
+      "000000000005000-000009-zzz",
+      1003,
+      ""
+    ],
+    [
+      "receive",
+      "garbage",
+      1003,
+      ""
+    ],
+    [
+      "tick",
+      "",
+      6000,
+      "000000000006000-000000-abc"
+    ],
+    [
+      "receive",
+      "000000000006000-000000-zzz",
+      6000,
+      ""
+    ],
+    [
+      "tick",
+      "",
+      5999,
+      "000000000006000-000002-abc"
+    ]
+  ],
+  "pairing": {
+    "link": "samriddhi://pair?s=http%3A%2F%2F127.0.0.1%3A8787&p=abcdefghij12345&k=__79_Pv6-fj39vX08_Lx8O_u7ezr6uno5-bl5OPi4eA",
+    "id": "abcdefghij12345",
+    "linkBytes": "fffefdfcfbfaf9f8f7f6f5f4f3f2f1f0efeeedecebeae9e8e7e6e5e4e3e2e1e0",
+    "requesterPub": "9efe3175f570cef66028adc8ab6e7bcc5f217238a09dcb2179cc0c22bab66d2d",
+    "code": "760 173",
+    "recipientSeed": "05121f2c394653606d7a8794a1aebbc8d5e2effc091623303d4a5764717e8b98",
+    "grant": {
+      "email": "vector.person@example.com",
+      "userId": "u00000000000rust",
+      "login": "8019334679c7d4192286da34fefd9374ea380d69be694e8dc7d74ba460d4f1af",
+      "dek": "030e19242f3a45505b66717c87929da8b3bec9d4dfeaf5000b16212c37424d58"
+    }
+  },
+  "moved": {
+    "link": "brahma://moved?s=https%3A%2F%2Fsync.example.com"
+  },
+  "wrappedPw": "k4iK522sKOgVesbvEyjw1gYPWZqhVZnoDrM+m1vKf59XBn9nLYXeo0u7IqqDzZMDVpd61PQWjMjdJ3I31m1LsJGevSERfqMq",
+  "wrappedRecovery": "BFi63VTY/Ye2hhkKvt0NurZ8tF98XW7J91hjCHoWGk/2SuwSDtlM8RaF6rYkLvESo8/9IrrXZrJjkm5fcKC6K/MmaDkK+HLB",
+  "payload": "b/6zdM1m71pHe1lHNyJF7CUprliCR3OeKBc/hn4s3S7bS1CqQcIAjepBHh7cqQHtHWppQM+ooCZ1l/O8D1MPxG2mqUMKf8+pKtaEdGugKDUyLN/dG/bpgrd7h56AmqS3yHmxQPbPWMCr3To5j16BAW9tiTxsjOUg2aAXKdjr4tJwSh6sUiFhMGjZElis/WMuaWzEzaCD9AyiN8aRc6V0RmGRLU9xPOMfOZ0i5D5m10Hob9CHRq+mphkL3X1smmgitj4Xc/chuxvfn7f2ERmNC8W+7Dzm2wSZw1sV1qF9Y9kX39yU4OwmqeHBn1b45kEeYrQsxOdIShnLRVaf9tZZS8Vlk40M4lIlfRTjvrXwx3AWTR2JEX3p3//AYurooGAyCIfTQJJouIIAPoVXjq2T",
+  "pairRequest": "S2cnKqeR8238j/wpyzvQ5q4/k3XzCI9dKut0JjfvwigTe8+2pES5vvjLfYJGeggov/b071BNlAVArfn1RDGaRtmLWzT+IuWdlLDPsYyst9qdAPIwXkFf6PWXyCBVknmogFETF7vqIQ57k6HPs5kytjRkqQk1q6Bo5c31VR8doozADb4iLMYVEg==",
+  "pairGrant": "{\"key\":\"TWXgIgqv+G6dK+6pDANztsh5Jv6I8hDoDfP7QP6/kS8=\",\"box\":\"x1bB5sKCqp8/OjpmlvJkeEMFcW3ptNTh3aixY+iLPhDYLMV7Tmp02jtcINB+p+ry0bPtovq++95RQjFQitb3k7Cf77EQbKlriNCkREXz3HX0Lz17VOEf9jWyYHY0P8hzRD68YZ+R1mguwfT69XpJbEf2e4QK2nqXG7h2nUCdtS310d3HnKA75DMvBLHiIOz5ueuPOhq8nbJ73Nn2tzgolt2vWiFEheuWOUUWLDoRxlKI6WJJYdkzNLtY5Tqw/pFNDcpzPfrM9CUerSLuGRh8u9uK2kCs4L5Hxla8gAGzG9NM9CkNujnCXwlO\"}"
+}
