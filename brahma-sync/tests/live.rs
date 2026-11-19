@@ -85,8 +85,12 @@ fn start(home: &Path, dir: tempfile::TempDir, init: bool) -> Server {
                 l.to_string()
             }
         })
+        .filter(|l| !l.starts_with("RATE_LIMIT_SCALE="))
         .collect::<Vec<_>>()
         .join("\n");
+    // Lift the rate limits for this throwaway server only, as Artha's live
+    // tests do; the server's own defaults are unchanged.
+    let text = text + "\nRATE_LIMIT_SCALE=1000";
     std::fs::write(&env_file, text.clone() + "\n").unwrap();
     let setup = text
         .lines()
